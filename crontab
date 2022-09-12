@@ -1,0 +1,5 @@
+# START CRON JOB
+# TODO : changer hello par main
+# TODO : mettre la temporalité
+* * * * * python3 /app/hello.py >> /var/log/drops.log
+# END CRON JOB

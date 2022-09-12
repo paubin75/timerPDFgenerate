@@ -2,6 +2,7 @@ import logging
 import datetime
 import locale
 import os
+import ftplib
 from pdfrw import PdfReader, PdfWriter, PdfDict
 # ---------------------------------------------------------------------------------
 locale.setlocale(locale.LC_ALL, 'fr_FR')
@@ -14,7 +15,8 @@ dates = {"Periode": dateActuelle.strftime("%B %Y").capitalize(), "Date_af_date":
 logging.info('Get Path of PDF Files')
 PDFTemplatePath = os.environ['PDFTemplatePath']
 logging.debug(PDFTemplatePath)
-PDFOutPath = os.environ['PDFOutPath'] + dateActuelle.strftime("%Y%B") + ".pdf"
+# TODO: rajouter heure pour test docker CRON
+PDFOutPath = os.environ['PDFOutPath'] + dateActuelle.strftime("%Y%m") + ".pdf"
 logging.debug(PDFOutPath)
 # ---------------------------------------------------------------------------------
 
@@ -39,3 +41,11 @@ if __name__ == '__main__':
     # ---------------------------------------------------------------------------------
     logging.info('Writing PDF out File')
     PdfWriter().write(PDFOutPath, PDFTemplateFile)
+
+    logging.info('FTP Connection Start')
+    session = ftplib.FTP('192.168.0.100', 'pdfgenerator', 'azerty')
+    session.cwd('../homes/pascal/Drive/Patrimoine/Appart Pinel/Gestion/QuittanceLoyer')
+    file = open(PDFOutPath, 'rb')  # file to send
+    session.storbinary('STOR ' + PDFOutPath, file)  # send the file
+    file.close()  # close file and FTP
+    session.quit()

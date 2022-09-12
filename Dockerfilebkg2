@@ -1,0 +1,17 @@
+# FROM python:3.9-alpine
+FROM python:3.7
+RUN apt-get update && apt-get -y install cron vim
+
+# Add your application
+COPY ./hello.py /app/hello.py
+
+# Copy and enable your CRON task
+COPY ./crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab
+RUN /usr/bin/crontab /etc/cron.d/crontab
+
+# Create empty log (TAIL needs this)
+RUN touch /tmp/out.log
+
+# Start TAIL - as your always-on process (otherwise - container exits right after start)
+CMD ["cron", "-f"] && tail -f /tmp/out.log
