@@ -1,12 +1,15 @@
 FROM python:3.9-alpine
 
 # Add your application
-# TODO: changer Hello par main
-COPY ./hello.py /app/hello.py
+COPY ./main.py /app/main.py
+COPY ./requirements.txt /app/requirements.txt
+COPY ./QuittanceLoyertemplate.pdf /app/QuittanceLoyertemplate.pdf
 
+RUN pip install -r /app/requirements.txt
+WORKDIR /app
 # Copy and enable your CRON task
-COPY ./crontab /app/crontab
-RUN crontab /app/crontab
+COPY ./crontab /app/mycron
+RUN crontab /app/mycron
 
 # Create empty log (TAIL needs this)
 RUN touch /tmp/out.log

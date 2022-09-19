@@ -1,5 +1,2 @@
-# START CRON JOB
-# TODO : changer hello par main
-# TODO : mettre la temporalité
-* * * * * python3 /app/hello.py >> /var/log/drops.log
-# END CRON JOB
+#run python script every minutes
+* * * * * python3 /app/main.py >>/tmp/out.log 2>/tmp/err.log
